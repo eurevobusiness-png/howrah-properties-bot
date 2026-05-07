@@ -4,11 +4,9 @@ import gspread
 import json
 import re
 from datetime import datetime
-from dotenv import load_dotenv
 from google.oauth2.service_account import Credentials
 
-load_dotenv()
-client = anthropic.Anthropic()
+client = anthropic.Anthropic(api_key=st.secrets["ANTHROPIC_API_KEY"])
 
 SHEET_ID = "1sq3xXX8kG0RFaagaBMfq1GiLZ5pIvNl7z15zQU2AFMA"
 
@@ -34,8 +32,9 @@ IMPORTANT LEAD CAPTURE RULES:
 
 def save_lead(data):
     try:
-        creds = Credentials.from_service_account_file(
-            "credentials.json",
+        creds_dict = dict(st.secrets["gcp_service_account"])
+        creds = Credentials.from_service_account_info(
+            creds_dict,
             scopes=["https://www.googleapis.com/auth/spreadsheets"]
         )
         gc = gspread.authorize(creds)
